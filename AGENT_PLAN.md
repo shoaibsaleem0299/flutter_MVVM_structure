@@ -32,7 +32,7 @@ features/<name>/
 **Other rules**
 - All endpoints in `core/network/api_endpoints.dart`. All routes in `core/router/routes.dart`.
 - Errors: repositories let `Failure` propagate; ViewModels catch it and put `message` in state.
-- Strings: all UI text in `lib/l10n/app_en.arb`.
+- Strings: UI strings in `core/constants/app_strings.dart` (no l10n/ARB).
 - Secrets: tokens only in `flutter_secure_storage`; config via `--dart-define`. Never commit `.env`, keystores, `key.properties`.
 - Style: `flutter analyze` zero warnings, `const` everywhere possible, single quotes, conventional commits (`feat:`, `fix:`, `chore:`, `test:`).
 - Every new feature ships with at least one repository test (mock `ApiService`) and, where there is logic, a ViewModel test.
@@ -45,7 +45,7 @@ features/<name>/
 1. `features/orders/data/models/*.dart`, `data/repositories/orders_repository.dart` (+ its provider).
 2. `presentation/viewmodels/orders_state.dart` + `orders_viewmodel.dart` (+ provider).
 3. `presentation/widgets/*` (small pieces) and `presentation/pages/orders_page.dart` (uses `AppScaffold`).
-4. Add route in `routes.dart` and `app_router.dart`; add strings to ARB.
+4. Add route in `routes.dart` and `app_router.dart`; add strings to `app_strings.dart`.
 5. Tests under `test/features/orders/`.
 
 **New shared widget:** create in `core/widgets/`, use theme + `AppSpacing`, then replace duplicates across features.
@@ -54,7 +54,7 @@ features/<name>/
 1. Inside this folder run:
    `flutter create --org com.hotworx --project-name HotworxUHF --platforms android,ios .`
    (adds `android/` and `ios/` without overwriting `lib/` or `pubspec.yaml`)
-2. `flutter pub get && flutter gen-l10n`
+2. `flutter pub get`
 3. Set app name, bundle id (`com.hotworx.uhf`), min SDKs:
    - Android: `minSdk 23`, `compileSdk 34+` in `android/app/build.gradle`
    - iOS: deployment target `13.0` in `ios/Podfile` and Xcode.
@@ -87,7 +87,6 @@ List features here (e.g. Profile, Items list, Item detail, Search, Notifications
 - [ ] Accessibility: semantics labels, 48dp touch targets, text scaling to 200%.
 - [ ] Push notifications (`firebase_messaging`) incl. iOS APNs setup.
 - [ ] Deep links (go_router + Android App Links / iOS Universal Links).
-- [ ] More locales: add `app_<locale>.arb`.
 
 ## 6. Quality gates (Phase 6)
 - [ ] Coverage >= 70% on `data` and ViewModels.
@@ -106,14 +105,13 @@ List features here (e.g. Profile, Items list, Item detail, Search, Notifications
 lib/
   main.dart, app.dart
   core/
-    config/ constants/ (app_constants, app_spacing) errors/ router/ storage/ theme/ utils/
+    config/ constants/ (app_constants, app_spacing, app_strings) errors/ router/ storage/ theme/ utils/
     network/   api_service.dart  api_endpoints.dart  dio_client.dart  auth_interceptor.dart
     widgets/   app_scaffold  app_app_bar  app_text_field  app_button  app_snack_bar  loading_indicator
   features/
     auth/      data/{models,repositories}  presentation/{pages,viewmodels,widgets}
     home/      presentation/pages
     settings/  presentation/pages
-  l10n/        app_en.arb
 test/          mirrors lib/
 integration_test/
 assets/        images, icons, fonts
