@@ -1,0 +1,15 @@
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+.vscode/
+.env
+*.jks
+key.properties
+Pods/
+*.g.dart
+*.freezed.dart
+.DS_Store
