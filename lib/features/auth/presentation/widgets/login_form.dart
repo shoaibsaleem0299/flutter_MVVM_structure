@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_spacing.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
-import '../../../../l10n/app_localizations.dart';
 import '../viewmodels/auth_viewmodel.dart';
 
 /// Reads the ViewModel once (no rebuilds); only the button listens to loading.
@@ -14,7 +14,6 @@ class LoginForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
     final vm = ref.read(authViewModelProvider.notifier);
 
     return Form(
@@ -24,7 +23,7 @@ class LoginForm extends ConsumerWidget {
         children: [
           AppTextField(
             controller: vm.emailController,
-            label: l10n.email,
+            label: AppStrings.email,
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
@@ -33,7 +32,7 @@ class LoginForm extends ConsumerWidget {
           const SizedBox(height: AppSpacing.md),
           AppTextField(
             controller: vm.passwordController,
-            label: l10n.password,
+            label: AppStrings.password,
             prefixIcon: Icons.lock_outline,
             isPassword: true,
             textInputAction: TextInputAction.done,
@@ -47,7 +46,7 @@ class LoginForm extends ConsumerWidget {
                 authViewModelProvider.select((s) => s.isLoading),
               );
               return AppButton(
-                label: l10n.login,
+                label: AppStrings.login,
                 isLoading: isLoading,
                 onPressed: vm.login,
               );

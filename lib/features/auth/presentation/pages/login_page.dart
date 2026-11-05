@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/app_snack_bar.dart';
-import '../../../../l10n/app_localizations.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../widgets/login_form.dart';
 
@@ -19,10 +19,10 @@ class LoginPage extends ConsumerWidget {
       ref.read(authViewModelProvider.notifier).clearError();
     });
 
-    return AppScaffold(
-      title: AppLocalizations.of(context).login,
+    return const AppScaffold(
+      title: AppStrings.login,
       scrollable: true,
-      body: const LoginForm(),
+      body: LoginForm(),
     );
   }
 }
