@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../utils/typedefs.dart';
 import 'failures.dart';
 
 Failure mapError(Object error) {
@@ -13,11 +14,15 @@ Failure mapError(Object error) {
         return const NetworkFailure();
       default:
         final code = error.response?.statusCode;
-        if (code == 401) return const UnauthorizedFailure();
-        return ServerFailure(
-          error.response?.statusMessage ?? 'Server error',
-          code,
-        );
+        String? message;
+        final resData = error.response?.data;
+        if (resData is Json) {
+          message = resData['message'] as String?;
+        }
+        message ??= error.response?.statusMessage ?? 'Server error';
+
+        if (code == 401) return UnauthorizedFailure(message);
+        return ServerFailure(message, code);
     }
   }
   return UnknownFailure(error.toString());

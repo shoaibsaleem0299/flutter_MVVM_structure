@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/api_service.dart';
 import '../../../../core/storage/token_storage.dart';
+import '../../../../core/utils/typedefs.dart';
 import '../models/auth_response.dart';
 import '../models/login_request.dart';
 import '../models/user_model.dart';
@@ -14,17 +15,25 @@ class AuthRepository {
   final TokenStorage _tokens;
 
   Future<UserModel> login(LoginRequest request) async {
-    final json = await _api.post(ApiEndpoints.login, body: request.toJson());
-    final response = AuthResponse.fromJson(json);
-    await _tokens.saveAccessToken(response.token);
-    return response.user;
+    final response = await _api.post<AuthResponse>(
+      ApiEndpoints.login,
+      body: request.toJson(),
+      fromJson: (data) => AuthResponse.fromJson(data as Json),
+    );
+    final auth = response.data!;
+    await _tokens.saveAccessToken(auth.token);
+    return auth.user;
   }
 
   /// Returns the saved session's user, or null if signed out / expired.
   Future<UserModel?> restoreSession() async {
     if (await _tokens.readAccessToken() == null) return null;
     try {
-      return UserModel.fromJson(await _api.get(ApiEndpoints.me));
+      final response = await _api.get<UserModel>(
+        ApiEndpoints.me,
+        fromJson: (data) => UserModel.fromJson(data as Json),
+      );
+      return response.data;
     } catch (_) {
       await _tokens.clear();
       return null;
