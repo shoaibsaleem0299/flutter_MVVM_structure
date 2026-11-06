@@ -1,10 +1,19 @@
-import 'package:equatable/equatable.dart';
-
-sealed class Failure extends Equatable implements Exception {
+sealed class Failure implements Exception {
   const Failure(this.message);
   final String message;
+
   @override
-  List<Object?> get props => [message];
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Failure &&
+          runtimeType == other.runtimeType &&
+          message == other.message;
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
+
+  @override
+  String toString() => '$runtimeType($message)';
 }
 
 class NetworkFailure extends Failure {
@@ -14,8 +23,16 @@ class NetworkFailure extends Failure {
 class ServerFailure extends Failure {
   const ServerFailure([super.message = 'Server error', this.statusCode]);
   final int? statusCode;
+
   @override
-  List<Object?> get props => [message, statusCode];
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      super == other &&
+          other is ServerFailure &&
+          statusCode == other.statusCode;
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message, statusCode);
 }
 
 class UnauthorizedFailure extends Failure {
