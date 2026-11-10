@@ -19,40 +19,79 @@ class ApiService {
     String path, {
     Json? query,
     T Function(dynamic data)? fromJson,
+    CancelToken? cancelToken,
   }) =>
-      request<T>('GET', path, query: query, fromJson: fromJson);
+      request<T>(
+        'GET',
+        path,
+        query: query,
+        fromJson: fromJson,
+        cancelToken: cancelToken,
+      );
 
   Future<ApiResponse<T>> post<T>(
     String path, {
     Object? body,
     Json? query,
     T Function(dynamic data)? fromJson,
+    CancelToken? cancelToken,
   }) =>
-      request<T>('POST', path, body: body, query: query, fromJson: fromJson);
+      request<T>(
+        'POST',
+        path,
+        body: body,
+        query: query,
+        fromJson: fromJson,
+        cancelToken: cancelToken,
+      );
 
   Future<ApiResponse<T>> put<T>(
     String path, {
     Object? body,
     Json? query,
     T Function(dynamic data)? fromJson,
+    CancelToken? cancelToken,
   }) =>
-      request<T>('PUT', path, body: body, query: query, fromJson: fromJson);
+      request<T>(
+        'PUT',
+        path,
+        body: body,
+        query: query,
+        fromJson: fromJson,
+        cancelToken: cancelToken,
+      );
 
   Future<ApiResponse<T>> patch<T>(
     String path, {
     Object? body,
     Json? query,
     T Function(dynamic data)? fromJson,
+    CancelToken? cancelToken,
   }) =>
-      request<T>('PATCH', path, body: body, query: query, fromJson: fromJson);
+      request<T>(
+        'PATCH',
+        path,
+        body: body,
+        query: query,
+        fromJson: fromJson,
+        cancelToken: cancelToken,
+      );
 
   Future<ApiResponse<T>> delete<T>(
     String path, {
     Object? body,
     Json? query,
     T Function(dynamic data)? fromJson,
+    CancelToken? cancelToken,
   }) =>
-      request<T>('DELETE', path, body: body, query: query, fromJson: fromJson);
+      request<T>(
+        'DELETE',
+        path,
+        body: body,
+        query: query,
+        fromJson: fromJson,
+        cancelToken: cancelToken,
+      );
 
   Future<ApiResponse<T>> request<T>(
     String method,
@@ -60,8 +99,15 @@ class ApiService {
     Object? body,
     Json? query,
     T Function(dynamic data)? fromJson,
+    CancelToken? cancelToken,
   }) async {
-    final raw = await _send(method, path, body: body, query: query);
+    final raw = await _send(
+      method,
+      path,
+      body: body,
+      query: query,
+      cancelToken: cancelToken,
+    );
     if (raw is Json) {
       return ApiResponse<T>.fromJson(raw, fromJson);
     }
@@ -73,17 +119,50 @@ class ApiService {
     );
   }
 
+  Future<ApiResponse<T>> upload<T>(
+    String path,
+    FormData formData, {
+    Json? query,
+    T Function(dynamic data)? fromJson,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+  }) async {
+    try {
+      final res = await _dio.post<dynamic>(
+        path,
+        data: formData,
+        queryParameters: query,
+        cancelToken: cancelToken,
+        onSendProgress: onSendProgress,
+      );
+      final raw = res.data;
+      if (raw is Json) {
+        return ApiResponse<T>.fromJson(raw, fromJson);
+      }
+      return ApiResponse<T>(
+        code: res.statusCode ?? 200,
+        status: true,
+        message: null,
+        data: fromJson != null && raw != null ? fromJson(raw) : raw as T?,
+      );
+    } catch (e) {
+      throw mapError(e);
+    }
+  }
+
   Future<dynamic> _send(
     String method,
     String path, {
     Object? body,
     Json? query,
+    CancelToken? cancelToken,
   }) async {
     try {
       final res = await _dio.request<dynamic>(
         path,
         data: body,
         queryParameters: query,
+        cancelToken: cancelToken,
         options: Options(method: method),
       );
 

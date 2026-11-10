@@ -8,7 +8,7 @@ class AuthResponse {
   final UserModel user;
 
   factory AuthResponse.fromJson(Json json) => AuthResponse(
-        token: json['token'] as String,
+        token: (json['token'] ?? json['access_token']) as String,
         user: UserModel.fromJson(json['user'] as Json),
       );
 }

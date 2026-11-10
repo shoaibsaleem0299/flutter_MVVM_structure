@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:hotworx_uhf/core/errors/failures.dart';
 import 'package:hotworx_uhf/core/network/api_service.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockDio extends Mock implements Dio {}
 
@@ -21,6 +21,7 @@ void main() {
         any(),
         data: any(named: 'data'),
         queryParameters: any(named: 'queryParameters'),
+        cancelToken: any(named: 'cancelToken'),
         options: any(named: 'options'),
       ),
     ).thenAnswer(
@@ -52,6 +53,7 @@ void main() {
         any(),
         data: any(named: 'data'),
         queryParameters: any(named: 'queryParameters'),
+        cancelToken: any(named: 'cancelToken'),
         options: any(named: 'options'),
       ),
     ).thenAnswer(
@@ -74,6 +76,29 @@ void main() {
         'message',
         'Validation error',
       )),
+    );
+  });
+
+  test('throws CanceledFailure when request is cancelled', () async {
+    when(
+      () => mockDio.request<dynamic>(
+        any(),
+        data: any(named: 'data'),
+        queryParameters: any(named: 'queryParameters'),
+        cancelToken: any(named: 'cancelToken'),
+        options: any(named: 'options'),
+      ),
+    ).thenThrow(
+      DioException(
+        requestOptions: RequestOptions(path: '/test'),
+        type: DioExceptionType.cancel,
+      ),
+    );
+
+    final cancelToken = CancelToken();
+    expect(
+      () => apiService.get('/test', cancelToken: cancelToken),
+      throwsA(isA<CanceledFailure>()),
     );
   });
 }

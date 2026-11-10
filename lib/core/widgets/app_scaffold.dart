@@ -13,7 +13,7 @@ class AppScaffold extends StatelessWidget {
     this.actions,
     this.scrollable = false,
     this.isLoading = false,
-    this.padding = const EdgeInsets.all(AppSpacing.lg),
+    this.padding = const EdgeInsets.all(AppSpacing.md),
     this.floatingActionButton,
     this.bottomNavigationBar,
   });
@@ -45,10 +45,10 @@ class AppScaffold extends StatelessWidget {
           children: [
             content,
             if (isLoading)
-              const Positioned.fill(
+              Positioned.fill(
                 child: ColoredBox(
-                  color: Colors.black26,
-                  child: LoadingIndicator(),
+                  color: Theme.of(context).colorScheme.scrim.withOpacity(0.32),
+                  child: const LoadingIndicator(),
                 ),
               ),
           ],

@@ -42,3 +42,7 @@ class UnauthorizedFailure extends Failure {
 class UnknownFailure extends Failure {
   const UnknownFailure([super.message = 'Unexpected error']);
 }
+
+class CanceledFailure extends Failure {
+  const CanceledFailure([super.message = 'Request was cancelled']);
+}

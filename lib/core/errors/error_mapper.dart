@@ -7,6 +7,10 @@ Failure mapError(Object error) {
   if (error is Failure) return error;
   if (error is DioException) {
     switch (error.type) {
+      case DioExceptionType.cancel:
+        return const CanceledFailure();
+      case DioExceptionType.badCertificate:
+        return const NetworkFailure('Certificate verification failed');
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
@@ -25,5 +29,5 @@ Failure mapError(Object error) {
         return ServerFailure(message, code);
     }
   }
-  return UnknownFailure(error.toString());
+  return const UnknownFailure('Something went wrong. Please try again.');
 }

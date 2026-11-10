@@ -3,6 +3,6 @@ class Env {
   const Env._();
   static const apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://api.example.com',
+    defaultValue: 'http://202.141.255.13:9020/api',
   );
 }
